@@ -1,3 +1,4 @@
+// inputs a number of arbitrary length and checks it validety under luhn checksum conditions
 #include<iostream> 
 #include<assert.h>
 
@@ -21,7 +22,7 @@ int main(){
 	int oddSum(0), evenSum(0);
 	int digits = 0;
 	
-	
+	cout << "enter an integer of arbitrary length" << endl;
 	char  dig = cin.get();
 	while(dig != '\n'){
 		
