@@ -50,6 +50,31 @@ void concatenate(arrayString &str1, const arrayString &str2) {
 
 }
 
-int main() {
+arrayString substring(const arrayString str,const int position,const int length) {
+	arrayString substring = new char[length + 1];
+	for (int i = 0; i < length; ++i) {
+		substring[i] = str[position + i];
+	}
+	substring[length] = NULL;
+	return substring;
+}
 
+void printString(const arrayString str) {
+	int i = 0;
+	while (str[i] != NULL) {
+		cout << str[i];
+		++i;
+	}
+	cout << endl;
+}
+
+int main() {
+	arrayString str = new char[1];
+	str[0] = NULL;
+	for (int i = 0; i < 6; ++i) {
+		append(str, 'a' + i);
+	}
+	printString(str);
+	printString(substring(str, 2, 14));
+	delete[] str;
 }
