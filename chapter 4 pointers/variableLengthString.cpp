@@ -50,7 +50,21 @@ void concatenate(arrayString &str1, const arrayString &str2) {
 
 }
 
+//caller is generly responisable for valied input, caller is responsible for memory deallocation 
 arrayString substring(const arrayString str,const int position,const int length) {
+	//assert a valid arrayString obejct is passed, position on length are within string range
+	
+	//check for ilegel start position, and empty 
+	try {
+		if (position < 0) 	throw("error start position is less then zero");
+		if (str == nullptr) throw("error nullptr passed as argument");
+			
+	}catch (char * err) {
+		std::cerr << err << endl;
+		return nullptr;
+	}
+
+	//create substring
 	arrayString substring = new char[length + 1];
 	for (int i = 0; i < length; ++i) {
 		substring[i] = str[position + i];
@@ -69,12 +83,22 @@ void printString(const arrayString str) {
 }
 
 int main() {
+	//
+
+
+	//initializing test array
 	arrayString str = new char[1];
 	str[0] = NULL;
+
+	//checking append and printstring
 	for (int i = 0; i < 6; ++i) {
 		append(str, 'a' + i);
 	}
 	printString(str);
+
+	//checking substring, and substring input validation
 	printString(substring(str, 2, 14));
+	substring(nullptr, 0, 0);
+	substring(str, -3, 4);
 	delete[] str;
 }
