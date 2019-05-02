@@ -10,9 +10,9 @@ char characterAt(const arrayString string, const int position) {
 	return string[position];
 }
 
-int length(const arrayString &arr) {
+int length(const arrayString &str) {
 	int length = 0;
-		while (arr[length] != 0) {
+		while (str[length] != 0) {
 			length++;
 	}
 	return length;
@@ -43,7 +43,7 @@ void concatenate(arrayString &str1, const arrayString &str2) {
 	for (int i = 0; i < str2Length; ++i) {
 		newStr[str1Length + i] = str2[i];
 	}
-	newStr[newStrLength] = 0;
+	newStr[newStrLength] = NULL;
 
 	delete[] str1;
 	str1 = newStr;
@@ -82,6 +82,64 @@ void printString(const arrayString str) {
 	cout << endl;
 }
 
+//compares the contents of str1 in startPos to the contents of str2, input validation is mostly up to the caller
+bool compareSubstring(const arrayString str1, const arrayString str2, const int startPos) {
+	//assert str1 and str2 are valied arrayStrings, str2 is not an empty string, strartPos is within str1 range
+	try {
+		if (startPos < 0) 	throw("error start position is less then zero");
+		if (str1 == nullptr || str2 == nullptr) throw("error nullptr passed as argument");
+		if (str2[0] == 0) throw("error str2 is and empty string");
+	}
+	catch (char * err) {
+		std::cerr << err << endl;
+		return false;
+	}
+
+	int itr = 0;
+	while (str2[itr] != NULL) {
+		if (str1[startPos + itr] != str2[itr]) return false;
+		++itr;
+	}
+	return true;
+}
+
+void replaceString(arrayString & str,const arrayString expression,const arrayString newExpression) {
+	//assert str, expression, newExpression are valied strings, expression/newExpression is not an empty string
+	try {
+		if (str == nullptr || expression == nullptr || newExpression == nullptr) throw("error nullptr passed as argument");
+		if (expression[0] == 0) throw("error expression is an empty string");
+		if (newExpression[0] == 0) throw("error new expression is an empty string");
+	}
+	catch (char * err) {
+		std::cerr << err << endl;
+		return;
+	}
+	
+	
+	int expressionLength = 0;
+	while (expression[expressionLength] != NULL) {
+		++expressionLength;
+	}
+
+	arrayString newStr = new char[1];
+	newStr[0] = NULL;
+
+	int itr = 0;
+	while (str[itr] != NULL) {
+		if (compareSubstring(str, expression, itr)) {
+			concatenate(newStr, newExpression);
+			itr += expressionLength;
+		}else {
+			append(newStr, str[itr]);
+			++itr;
+		}
+	}
+	
+	delete[] str;
+	str = newStr;
+
+}
+
 int main() {
 	//
 
@@ -96,7 +154,12 @@ int main() {
 	}
 	printString(str);
 
-	//checking substring, and substring input validation
+	//checking replaceString
+	concatenate(str, "cd");
+	replaceString(str, "cd", "xyz");
+	printString(str);
+
+	//checking substring, and substring input validation (this use causes a memory leak, but for this scale it should be fine)
 	printString(substring(str, 2, 14));
 	substring(nullptr, 0, 0);
 	substring(str, -3, 4);
