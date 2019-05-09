@@ -22,7 +22,7 @@ class MyString {
 
 		//access like array
 		char operator [](const int pos) const {
-			if (pos > str[0] + 1) return NULL;
+			if (pos > str[0] ) return NULL;
 			return str[pos];
 		}
 
@@ -79,6 +79,7 @@ class MyString {
 
 };
 
+//out put a MyString object with conventional notation
 std::ostream& operator <<(std::ostream& ostream, const MyString & string) {
 	string.print();
 	return ostream;
@@ -100,7 +101,6 @@ MyString concatenate(const MyString & str1, const MyString & str2) {
 		
 	}
 
-	cout << newStr << endl;
 	return newStr;
 };
 

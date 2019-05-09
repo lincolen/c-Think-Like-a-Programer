@@ -51,6 +51,36 @@ void printString(String string) {
 	cout << endl;
 }
 
+void deleteString(const String str) {
+	charNode * itr, next;
+	next = str;
+	while (next != nullptr) {
+		itr = next;
+		next = itr->next;
+		delete itr;
+	}
+}
+
+String concatenate(const String str1, const String str2) {
+	//assume proper formated strings
+	
+	String newStr = nullptr;
+	charNode * itr1, itr2;
+	//check for empty pointers
+	try {
+		if (str1 == nullptr || str2 == nullptr) throw "argument dosent point to anything";
+	}
+	catch(char * e){
+		std::cerr << e << endl;
+		return newStr;
+	}
+
+
+
+
+	
+}
+
 int main() {
 
 	String str = nullptr;

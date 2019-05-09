@@ -31,6 +31,7 @@ void addRecord(Student * &studentList, const int ID, const int grade) {
 	*/
 }
 
+//the student grade avarege
 double avarageRecord(Student * studentList) {
 	int numOfStudents = 0;
 	int sum = 0;
