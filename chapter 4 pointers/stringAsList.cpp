@@ -31,14 +31,21 @@ void append(String &string, const char c) {
 	node->next = nullptr;	
 }
 
-char characterAt(String string, int position) {
+char characterAt(const String string,const int position) {
 	charNode * node = string;
-	for (int i = 0; i <= position; ++i) {
-		if (node == nullptr) {
+	if (string == nullptr) {
+		cout << "error empty string";
+		return NULL;
+	}
+
+	for (int i = 0; i < position; ++i) {
+		if (node->next == nullptr) {
 			cout << "error position exceeds string length" << endl;
 			return 0;
 		}
+		
 		node = node->next;
+		//cout << node->c;
 	}
 	return node->c;
 }
@@ -52,7 +59,7 @@ void printString(String string) {
 }
 
 void deleteString(const String str) {
-	charNode * itr, next;
+	charNode * itr,* next;
 	next = str;
 	while (next != nullptr) {
 		itr = next;
@@ -65,20 +72,61 @@ String concatenate(const String str1, const String str2) {
 	//assume proper formated strings
 	
 	String newStr = nullptr;
-	charNode * itr1, itr2;
+	charNode * itr1, * itr2;
 	//check for empty pointers
+	/*
 	try {
-		if (str1 == nullptr || str2 == nullptr) throw "argument dosent point to anything";
+		if (str1 == nullptr || str2 == nullptr) throw "arguments dosent point to anything";
 	}
 	catch(char * e){
 		std::cerr << e << endl;
 		return newStr;
 	}
-
-
-
-
+	*/
 	
+	//copy str1 contents
+	if (str1 != nullptr) {
+		newStr = new charNode;
+		itr1 = newStr;
+		itr2 = str1;
+
+		itr1->c = itr2->c;
+		while (itr2->next != nullptr) {
+			itr2 = itr2->next;
+			itr1->next = new charNode;
+			itr1 = itr1->next;
+
+			itr1->c = itr2->c;
+		}
+		itr1->next = nullptr;
+	}
+
+	//copy str2 contents
+	if (str2 != nullptr) {
+		//in case str1 was empty
+		if (newStr == nullptr) {
+			newStr = new charNode;
+			itr1 = newStr;
+		}
+		//in case str1 was not empty
+		else {
+			itr1->next = new charNode;
+			itr1 = itr1->next;
+		}
+
+		itr2 = str2;
+		itr1->c = itr2->c;
+
+		while (itr2->next != nullptr) {
+			itr2 = itr2->next;
+			itr1->next = new charNode;
+			itr1 = itr1->next;
+
+			itr1->c = itr2->c;
+		}
+		itr1->next = nullptr;
+	}
+	return newStr;
 }
 
 int main() {
@@ -95,4 +143,26 @@ int main() {
 	//checking characterAt
 	cout << characterAt(str, 2) << endl;
 	cout << characterAt(str, 3) << endl;
+
+	//cheaking concatenate
+	String str2 = nullptr;
+	printString(str2);
+
+	str2 = concatenate(nullptr, nullptr);
+	printString(str2);
+	deleteString(str2);
+
+	str2 = concatenate(str, nullptr);
+	printString(str2);
+	deleteString(str2);
+
+	str2 = concatenate(nullptr, str);
+	printString(str2);
+	deleteString(str2);
+
+	str2 = concatenate(str, str);
+	printString(str2);
+
+	deleteString(str);
+	deleteString(str2);
 }
