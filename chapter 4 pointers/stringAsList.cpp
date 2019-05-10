@@ -129,6 +129,54 @@ String concatenate(const String str1, const String str2) {
 	return newStr;
 }
 
+void removeChars(String & str, const int pos, const int length) {
+	charNode * cutoff, *itr, * next;
+	
+	//empty string
+	if (str == nullptr) {
+		return;
+	}
+
+	//if removeing from the begining
+	if (pos == 0) {
+		itr = str;
+		next = itr;
+		for (int i = 0; i < length; ++i) {
+			itr = next;
+			next = itr->next;
+			delete itr;
+			if (next == nullptr) {
+				str = nullptr;
+				return;
+			}
+			
+		}
+		str = next;
+		return;
+	}
+
+	//set cutoff
+	cutoff = str;
+	for (int i = 0; i < pos - 1; ++i) {
+		if (cutoff->next == nullptr) return;
+		cutoff = cutoff->next;
+	}
+	itr = cutoff;
+	next = itr->next;
+	for (int i = 0; i < length; ++i) {
+		itr = next;
+		next = itr->next;
+		delete itr;
+		if (next == nullptr) {
+			cutoff->next = nullptr;
+			return;
+		}		
+	}
+	cutoff->next = next;
+	return;
+
+}
+
 int main() {
 
 	String str = nullptr;
@@ -161,6 +209,10 @@ int main() {
 	deleteString(str2);
 
 	str2 = concatenate(str, str);
+	printString(str2);
+
+	//check remove chars
+	removeChars(str2, 3, 10);
 	printString(str2);
 
 	deleteString(str);
