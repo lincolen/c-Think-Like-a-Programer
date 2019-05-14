@@ -5,6 +5,8 @@ using std::cin;
 using std::cout;
 using std::endl;
 
+namespace intAsList {
+	
 	struct intNode {
 		int digit;
 		intNode * next;
@@ -50,7 +52,7 @@ using std::endl;
 		cout << endl;
 	}
 
-	void deleteInt( extendedInt & myInt) {
+	void deleteInt(extendedInt & myInt) {
 		intNode * itr, *next;
 		itr = myInt;
 		while (itr != nullptr) {
@@ -92,7 +94,7 @@ using std::endl;
 			digit2 = itr2 ? itr2->digit : 0;
 			itrNew->digit = (digit1 + digit2 + carry) % 10;
 			carry = (digit1 + digit2 + carry) / 10;
-			
+
 			itr1 = itr1 ? itr1->next : nullptr;
 			itr2 = itr2 ? itr2->next : nullptr;
 		}
@@ -104,7 +106,9 @@ using std::endl;
 
 	}
 
+}
 
+using namespace intAsList;
 
 int main() {
 
