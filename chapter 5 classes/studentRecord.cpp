@@ -8,7 +8,7 @@ using std::endl;
 
 class StudentRecord{
 	public:
-		StudentRecord();
+		StudentRecord(); //empty initializer sets ID to an empty value (-1)
 		StudentRecord(int ID, int grade, std::string name);
 		int getID();
 		void setID(int newID);
