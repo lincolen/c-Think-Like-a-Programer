@@ -5,15 +5,16 @@ using std::cout;
 using std::endl;
 
 class String {
-	public:	
-		String();
-		String(const char *); //construct string from cString
-		String(const String &); // copy constructor
-		~String();
-		String& operator= (String & rhs); //copy assignment
-		char characterAt(const int position) const; //return charcter at passed poition, if position is invalid (pos < 0) throws an error, if position excceds string length return null
-		void concatenate(const String& str2);
-		void append(const char c);
+public:
+	String();
+	String(const char *); //construct string from cString
+	String(const String &); // copy constructor
+	~String();
+	String& operator= (String & rhs); //copy assignment
+	char characterAt(const int position) const; //return charcter at passed poition, if position is invalid (pos < 0) throws an error, if position excceds string length return null
+	void concatenate(const String& str2);
+	void append(const char c);
+	char operator[] (int pos) const;
 
 		friend std::ostream& operator << (std::ostream& ostream, const String& string);
 
@@ -23,6 +24,7 @@ class String {
 		bool isValidString(const char * cString) const;
 		int cStringLength(const char * cString) const;
 		char* getcString() const;
+		int length() const;
 		
 };
 
@@ -59,6 +61,11 @@ int main(){
 	//test concecrate
 	myString2.concatenate(myString2);
 	cout <<"concaracte with itself: " << myString2 << endl;
+
+	//test append
+	myString2.append('X');
+	cout <<"append X to str2* " << myString2 << endl;
+
 
 	delete myString;
 }
@@ -143,6 +150,10 @@ char String::characterAt(const int pos) const {
 	}
 }
 
+char String::operator[] (int pos) const{
+	return this->characterAt(pos);
+}
+
 String& String::operator = (String & rhs) {
 	if (this == &rhs)
 		return *this;
@@ -173,4 +184,23 @@ void String::concatenate(const String& str2) {
 
 	delete[] _str;
 	_str = newStr;
+}
+
+int String::length() const {
+	return cStringLength(_str);
+}
+void String::append(const char c) {
+	if (c == NULL)
+		return;
+
+	int stringLength = this->length();
+
+	char * newString = new char[stringLength + 2];
+	for (int i = 0; i < stringLength; ++i) {
+		newString[i] = this->characterAt(i);
+	}
+	newString[stringLength] = c;
+	newString[stringLength + 1] = NULL;
+	delete[] _str;
+	_str = newString;
 }
