@@ -1,8 +1,10 @@
 #include<iostream>
+#include<algorithm> // min,
 
 using std::cin;
 using std::cout;
 using std::endl;
+using std::min;
 
 class String {
 public:
@@ -15,6 +17,7 @@ public:
 	void concatenate(const String& str2);
 	void append(const char c);
 	char operator[] (int pos) const;
+	void remove(const int pos, const int removeLength);
 
 		friend std::ostream& operator << (std::ostream& ostream, const String& string);
 
@@ -66,6 +69,32 @@ int main(){
 	myString2.append('X');
 	cout <<"append X to str2* " << myString2 << endl;
 
+	//test remove
+	cout << "\nremove test*" << endl;
+	cout << "test invalid argumetn pos less then 0: ";
+	try {
+		myString2.remove(-1, 6);
+	}
+	catch (char * e) {
+		cout << e << endl;
+	}
+	cout << "test invalid argumetn length less then 0: ";
+	try {
+		myString2.remove(6, -4);
+	}
+	catch (char * e) {
+		cout << e << endl;
+	}
+	cout << "test invalid argumetn pos excceds string length: ";
+	try {
+		myString2.remove(40, 6);
+	}
+	catch (char * e) {
+		cout << e << endl;
+	}
+	cout << "test remove 3 from pos 4: ";
+	myString2.remove(4, 3); 
+	cout << myString2 << endl;
 
 	delete myString;
 }
@@ -203,4 +232,40 @@ void String::append(const char c) {
 	newString[stringLength + 1] = NULL;
 	delete[] _str;
 	_str = newString;
+}
+
+void String::remove(const int pos, const int removeLength) {
+	//input validation
+	int oldLength = this->length();
+	if (pos < 0 || removeLength < 0 || pos >= oldLength) { //non negative integers, pos does not exceed string length
+		throw "Error invalid arguments";
+		return;
+	}
+	
+	/*
+	int newLength = (pos + removeLength >= oldLength) ? pos : oldLength - removeLength;
+	
+	char * newStr = new char[newLength + 1];
+	for (int i = 0; i < pos; ++i) {
+		newStr[i] = (*this)[i];
+	}
+
+	for (int i = pos; i < newLength; ++i) {
+		newStr[i] = (*this)[i + removeLength]; 
+	}
+	newStr[newLength] = NULL;
+
+	delete[] _str;
+	_str = newStr;
+	*/
+	if (pos + removeLength >= oldLength) {
+		_str[pos] = NULL;
+	}
+	else {
+		int i = -1;
+		do {
+			++i;
+			_str[pos + i] = _str[pos + removeLength + i];
+		} while (_str[i] != NULL);
+	}
 }
