@@ -17,6 +17,7 @@ class StudentRecord{
 		std::string getName();
 		void setName(std::string newName);
 		std::string getLetterGrade();
+		bool isValid();
 
 	private:
 		int ID;
@@ -96,4 +97,8 @@ bool StudentRecord::isValidGrade(int grade) {
 		return true;
 	else
 		return false;
+}
+
+bool StudentRecord::isValid() {
+	return (this->getID() == -1) ? false : true;
 }

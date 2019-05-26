@@ -26,16 +26,27 @@ class StudentRecordCollection {
 		StudentRecord getRecordWithId(const int id); //return the student record specified by the id, if no student is found returns throws a string error and returns a StudentRecord with illegel values;
 		void removeRecordById(const int id); //removes he record specifiedby the id if it exisits 
 		StudentRecordCollection& operator = (const StudentRecordCollection & rhs); //copy assignment
+		int averageRecord(); // returns -1 if there are no valid records
 };
 
 int main() {
 	StudentRecordCollection	myCollection;
+	cout << "average record: " << myCollection.averageRecord() << endl;
 
+	
 	myCollection.addRecord(12, 55, "london london");
+	myCollection.addRecord(13, 65, "london london");
 
-	cout << myCollection.getRecordWithId(12).getGrade() << endl;
+	cout << "average record: " << myCollection.averageRecord() << endl;
 
-	cout << myCollection.getRecordWithId(11).getID() << endl;
+	try {
+		cout << myCollection.getRecordWithId(12).getGrade() << endl;
+	}
+	catch (...) {};
+	try {
+		cout << myCollection.getRecordWithId(11).getID() << endl;
+	}
+	catch (...) {};
 
 	myCollection.removeRecordById(11);
 	myCollection.removeRecordById(12);
@@ -165,4 +176,32 @@ StudentRecordCollection& StudentRecordCollection::operator= (const StudentRecord
 	this->head = copyList(rhs.head);
 
 	return *this;
+}
+
+int StudentRecordCollection::averageRecord() {
+	//check empty list
+	if (this->head == nullptr) {
+	std::cerr << "error empty list" << endl;
+		return -1;
+	}
+
+
+	studentRecordNode * recordNode  = this->head;
+	int gradeSum = 0;
+	int numOfStudents = 0;
+	while (recordNode != nullptr) {
+		if (recordNode->record.isValid()) {
+			gradeSum += recordNode->record.getGrade();
+			++numOfStudents;
+		}
+		recordNode = recordNode->next;
+	}
+	
+	if (numOfStudents == 0) {
+		std::cerr << "No valid student records" << endl;
+		return -1;
+	}
+
+	return gradeSum / numOfStudents;
+	
 }
