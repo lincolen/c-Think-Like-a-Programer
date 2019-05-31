@@ -20,12 +20,15 @@ class StudentRecordCollection {
 	public:
 		StudentRecordCollection();
 		StudentRecordCollection(const StudentRecordCollection & original);
+		StudentRecordCollection(StudentRecordCollection && original);
 		~StudentRecordCollection();
 		StudentRecordCollection& addRecord(const int ID,const int grade,const std::string name); //creates a new record using the paramters and adds it the list
 		StudentRecordCollection& addRecord(const StudentRecord & newRecord); // copies and adds a record to the list
 		StudentRecord getRecordWithId(const int id); //return the student record specified by the id, if no student is found returns throws a string error and returns a StudentRecord with illegel values;
 		void removeRecordById(const int id); //removes he record specifiedby the id if it exisits 
 		StudentRecordCollection& operator = (const StudentRecordCollection & rhs); //copy assignment
+		StudentRecordCollection& operator = (StudentRecordCollection && rhs); //move assignment
+		StudentRecordCollection getRecordsInRange(const int gradeMin, const int gradeMax) const;
 };
 
 int main() {
@@ -34,8 +37,17 @@ int main() {
 	myCollection.addRecord(12, 55, "london london");
 
 	cout << myCollection.getRecordWithId(12).getGrade() << endl;
-
-	cout << myCollection.getRecordWithId(11).getID() << endl;
+	try {
+		cout << myCollection.getRecordWithId(11).getID() << endl;
+	}
+	catch (char * e) {
+		cout << e << endl;
+	}
+	
+	cout << "\ntest getRecordsInRange" << endl;
+	cout << "copy records in myCollection in range 0 - 80" << endl;
+	StudentRecordCollection	myCollection2 = myCollection.getRecordsInRange(0, 80);
+	cout << "record obtained id, grade:" << myCollection2.getRecordWithId(12).getID() << " " << myCollection2.getRecordWithId(12).getGrade();
 
 	myCollection.removeRecordById(11);
 	myCollection.removeRecordById(12);
@@ -50,6 +62,12 @@ StudentRecordCollection::StudentRecordCollection() {
 
 StudentRecordCollection::StudentRecordCollection(const StudentRecordCollection & original) {
 	this->head = copyList(original.head);
+}
+
+StudentRecordCollection::StudentRecordCollection(StudentRecordCollection && original) {
+	cout << "this is move constuction" << endl;
+	this->head = original.head;
+	original.head = nullptr;
 }
 
 StudentRecordCollection::~StudentRecordCollection() {
@@ -165,4 +183,32 @@ StudentRecordCollection& StudentRecordCollection::operator= (const StudentRecord
 	this->head = copyList(rhs.head);
 
 	return *this;
+}
+
+StudentRecordCollection& StudentRecordCollection::operator= (StudentRecordCollection && rhs) {
+	cout << "this is move assignment" << endl;
+	if (this == &rhs)
+		return *this;
+
+	deleteList(this->head);
+	this->head = rhs.head;
+	rhs.head = nullptr;
+
+	return *this;
+}
+
+StudentRecordCollection StudentRecordCollection::getRecordsInRange(int gradeMin = 0, int gradeMax = 100) const {
+	StudentRecordCollection newCollection;
+	studentRecordNode * itr;
+	itr = this->head;
+	while (itr != nullptr) {
+		bool isValidRecordInRange = (itr->record.isValid() && itr->record.getGrade() >= gradeMin && itr->record.getGrade() <= gradeMax);
+		if (isValidRecordInRange) {
+			
+			newCollection.addRecord(itr->record);
+		}
+		itr = itr->next;
+	}
+
+	return newCollection;
 }

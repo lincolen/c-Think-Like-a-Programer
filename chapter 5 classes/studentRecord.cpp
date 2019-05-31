@@ -10,13 +10,14 @@ class StudentRecord{
 	public:
 		StudentRecord(); //empty initializer sets ID to an empty value (-1)
 		StudentRecord(int ID, int grade, std::string name);
-		int getID();
+		int getID() const;
 		void setID(int newID);
-		int getGrade();
+		int getGrade() const;
 		void setGrade(int newGrade);
-		std::string getName();
+		std::string getName() const;
 		void setName(std::string newName);
 		std::string getLetterGrade();
+		bool isValid() const;
 
 	private:
 		int ID;
@@ -51,13 +52,13 @@ StudentRecord::StudentRecord(int ID, int grade, std::string name) {
 	}
 	setName(name);
 }
-int StudentRecord::getID() {
+int StudentRecord::getID() const{
 	return this->ID;
 }
 void StudentRecord::setID(int newID) {
 	this->ID = newID;
 }
-int StudentRecord::getGrade() {
+int StudentRecord::getGrade() const{
 	return this->grade;
 }
 
@@ -69,7 +70,7 @@ void StudentRecord::setGrade(int newGrade) {
 		throw("error invalid grade passed as argument");
 }
 
-std::string StudentRecord::getName() {
+std::string StudentRecord::getName() const{
 	return this->name;
 }
 void StudentRecord::setName(std::string newName) {
@@ -96,4 +97,10 @@ bool StudentRecord::isValidGrade(int grade) {
 		return true;
 	else
 		return false;
+}
+
+bool StudentRecord::isValid() const {
+	if (this->getID() != -1)
+		return true;
+	return false;
 }
