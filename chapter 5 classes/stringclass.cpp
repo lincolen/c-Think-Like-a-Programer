@@ -1,5 +1,6 @@
 #include<iostream>
 #include<algorithm> // min,
+#include<cassert>
 
 using std::cin;
 using std::cout;
@@ -16,10 +17,10 @@ public:
 	char characterAt(const int position) const; //return charcter at passed poition, if position is invalid (pos < 0) throws an error, if position excceds string length return null
 	void concatenate(const String& str2);
 	void append(const char c);
-	char operator[] (int pos) const;
+	char operator[] (int pos) const; //alias for charchter at
 	void remove(const int pos, const int removeLength);
 
-		friend std::ostream& operator << (std::ostream& ostream, const String& string);
+	friend std::ostream& operator << (std::ostream& ostream, const String& string); 
 
 	private:
 		char * _str;
@@ -32,6 +33,8 @@ public:
 };
 
 int main(){
+	
+
 	//test defult constructor 
 	String * myString = new String();
 	cout << "out put empty string: " << *myString << endl;
@@ -46,14 +49,17 @@ int main(){
 	cout << myString2 << endl;
 
 	//test charchter at
+	/* assertion/error handling test
 	try {
 		cout <<"charchter at -3: " << myString2.characterAt(-3) << endl;
+		cout << "charchter at 100: " << myString2.characterAt(100) << endl;
 	}
 	catch (const char * e){
 		cout << e << endl;
 	}
+	*/
 	cout << "charchter at 3: " << myString2.characterAt(3) << endl;
-	cout << "charchter at 100: " << myString2.characterAt(100) << endl;
+	
 
 	//test copy assignment
 	delete myString;
@@ -71,6 +77,7 @@ int main(){
 
 	//test remove
 	cout << "\nremove test*" << endl;
+	/* assert/exeption tests
 	cout << "test invalid argumetn pos less then 0: ";
 	try {
 		myString2.remove(-1, 6);
@@ -78,6 +85,7 @@ int main(){
 	catch (char * e) {
 		cout << e << endl;
 	}
+	
 	cout << "test invalid argumetn length less then 0: ";
 	try {
 		myString2.remove(6, -4);
@@ -85,6 +93,7 @@ int main(){
 	catch (char * e) {
 		cout << e << endl;
 	}
+	
 	cout << "test invalid argumetn pos excceds string length: ";
 	try {
 		myString2.remove(40, 6);
@@ -92,6 +101,7 @@ int main(){
 	catch (char * e) {
 		cout << e << endl;
 	}
+	*/
 	cout << "test remove 3 from pos 4: ";
 	myString2.remove(4, 3); 
 	cout << myString2 << endl;
@@ -109,7 +119,7 @@ String::String() {
 }
 
 String::~String() {
-	delete _str;
+	delete[] _str;
 	//cout << "this is the destructor" << endl;
 }
 
@@ -128,13 +138,17 @@ bool String::isValidString(const char * cString) const{
 	}
 }
 
-//return length as number of charchters in the string nor includeing null
+//return length as number of charchters in the string not including null
 int String::cStringLength(const char * cString) const {
 	//data validation
+	assert(!"Empty pointer passed as argumetn" || isValidString(cString));
+	//assert pointer is a null terminated c string
+	
+	/*
 	if (!isValidString(cString)) {
 		throw("Error empty pointer passed as argument");
 		return -1;
-	}
+	}*/
 
 	int length = 0;
 	while (cString[length] != NULL) {
@@ -146,11 +160,16 @@ int String::cStringLength(const char * cString) const {
 
 String::String(const char * cString) {
 	//data validation and error handeling
+	assert(!"Empty pointer passed as argument" || isValidString(cString));
+	//assert pointer is a null terminated c string
+	/*
 	if (!isValidString(cString)) {
 		throw("error empty pointer passed as initilazier argument");
 		_str = "";
 		return;
 	}
+	*/
+
 	int length = cStringLength(cString);
 	_str = new char[length + 1];
 	for (int i = 0; i < length + 2; ++i) {
@@ -162,21 +181,22 @@ String::String(const String& origin) : String(origin.getcString()) {
 }
 
 char String::characterAt(const int pos) const {
+	
+	const int strLength = cStringLength(_str);
 	//input validation
+	assert(!"invalid poistion" || (pos >= 0 && pos < strLength));
+	/* error handling with exeptions
 	if (pos < 0) {
 		throw "invalid position passed as argument";
 		return NULL;
 	}
-
-	const int strLength = cStringLength(_str);
-	//pos exeeds string range
-	if (pos >= strLength) {
+		if (pos >= strLength) {
 	//	throw "position excceds string length";
 		return NULL;
 	}
-	else {
-		return _str[pos];
-	}
+	*/
+
+	return _str[pos];
 }
 
 char String::operator[] (int pos) const{
@@ -187,7 +207,7 @@ String& String::operator = (String & rhs) {
 	if (this == &rhs)
 		return *this;
 
-	delete _str;
+	delete[] _str;
 	const char * cString = rhs.getcString();
 	int length = cStringLength(cString);
 	_str = new char[length + 1];
@@ -237,27 +257,17 @@ void String::append(const char c) {
 void String::remove(const int pos, const int removeLength) {
 	//input validation
 	int oldLength = this->length();
+	assert(!"pos is invalid" || (pos > 0 && pos < oldLength));
+	assert(!"removeLength is invalid" || removeLength > 0);
+	/* using exeptions
+	int oldLength = this->length();
 	if (pos < 0 || removeLength < 0 || pos >= oldLength) { //non negative integers, pos does not exceed string length
 		throw "Error invalid arguments";
 		return;
 	}
-	
-	/*
-	int newLength = (pos + removeLength >= oldLength) ? pos : oldLength - removeLength;
-	
-	char * newStr = new char[newLength + 1];
-	for (int i = 0; i < pos; ++i) {
-		newStr[i] = (*this)[i];
-	}
-
-	for (int i = pos; i < newLength; ++i) {
-		newStr[i] = (*this)[i + removeLength]; 
-	}
-	newStr[newLength] = NULL;
-
-	delete[] _str;
-	_str = newStr;
 	*/
+	
+
 	if (pos + removeLength >= oldLength) {
 		_str[pos] = NULL;
 	}
