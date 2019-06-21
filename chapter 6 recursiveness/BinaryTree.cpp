@@ -50,6 +50,8 @@ int main() {
 	myTree.addElement(5);
 	myTree.addElement(22);
 	myTree.printTree();
+
+	//test is search tree
 	
 }
 
@@ -162,5 +164,23 @@ template<class T> T BinaryTree<T>::findMax(Tree tree) const {
 	if(tree->getright() != nullptr)
 		max = max(max, findMax(tree->getright()));
 	return max;
+}
+
+bool isBinarySearchTree(BinaryTree<int>::Node *root) {
+	if (root == nullptr)
+	return true;
+
+	bool isSearchTree = true;
+	if (root->getLeft() != nullptr) {
+		isSearchTree = (root->getElement() > root->getLeft()->getElement()) && isBinarySearchTree(root->getLeft);
+	}
+	if (root->getRight() != nullptr) {
+		isSearchTree = 
+			isSearchTree && 
+			(root->getElement() < root->getRight()->getElement()) && 
+			isBinarySearchTree(root->getRight());
+	}
+
+	return isSearchTree;
 }
 
