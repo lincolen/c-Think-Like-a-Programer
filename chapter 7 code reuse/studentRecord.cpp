@@ -67,7 +67,7 @@ void StudentRecord::setGrade(int newGrade) {
 	if (isValidGrade(newGrade))
 		this->grade = newGrade;
 	else
-		throw("error invalid grade passed as argument");
+		this->grade = -1;
 }
 
 std::string StudentRecord::getName() const{
@@ -93,7 +93,7 @@ std::string StudentRecord::getLetterGrade() {
 }
 
 bool StudentRecord::isValidGrade(int grade) {
-	if (grade >= 0 && grade <= 100)
+	if (grade >= -1 && grade <= 100)
 		return true;
 	else
 		return false;
