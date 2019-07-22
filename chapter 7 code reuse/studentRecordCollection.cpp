@@ -21,6 +21,10 @@ class StudentRecordCollection {
 		void deleteList(studentRecordList & list); //deletes the list whos head is the argument, and changes it to a nullptr
 		typedef bool(*firstStudentPolicy)(const StudentRecord & r1,const StudentRecord & r2);
 		firstStudentPolicy currentPolicy;
+		//first student policies 
+		static bool higherGrade(const StudentRecord & r1, const StudentRecord & r2);
+		static bool lowerStudentNumber(const StudentRecord & r1, const StudentRecord & r2);
+		static bool nameComesFirst(const StudentRecord & r1, const StudentRecord & r2);
 
 	public:
 		StudentRecordCollection();
@@ -35,10 +39,9 @@ class StudentRecordCollection {
 		int averageRecord(); // returns -1 if there are no valid records
 		StudentRecordCollection& operator = (StudentRecordCollection && rhs); //move assignment
 		StudentRecordCollection getRecordsInRange(const int gradeMin, const int gradeMax) const;
-		static bool higherGrade(const StudentRecord & r1,const StudentRecord & r2);
-		static bool lowerStudentNumber(const StudentRecord & r1,const StudentRecord & r2);
-		static bool nameComesFirst(const StudentRecord & r1,const StudentRecord & r2);
-		void setFirstStudentPolicy(firstStudentPolicy f);
+
+		enum FirstStudentPolicies{ NONE, HIGHEST_GRADE,LOWEST_ID, FIRST_NAME };
+		void setFirstStudentPolicy(FirstStudentPolicies policy);
 		StudentRecord getFirstStudent() const;
 
 		
@@ -87,10 +90,10 @@ int main() {
 	
 	cout << "\nfirst student policy tests" << endl;
 	cout << "by grade" << endl;
-	myCollection2.setFirstStudentPolicy(StudentRecordCollection::higherGrade);
+	myCollection2.setFirstStudentPolicy(StudentRecordCollection::HIGHEST_GRADE);
 	cout << "first Stduent: " << myCollection2.getFirstStudent().getName() << endl;
 	cout << "by id" << endl;
-	myCollection2.setFirstStudentPolicy(StudentRecordCollection::lowerStudentNumber);
+	myCollection2.setFirstStudentPolicy(StudentRecordCollection::FirstStudentPolicies::LOWEST_ID);
 	cout << "first Stduent: " << myCollection2.getFirstStudent().getName() << endl;
 
 	cout << "\nrecord obtained id, grade:" << myCollection2.getRecordWithId(12).getID() << " " << myCollection2.getRecordWithId(12).getGrade();
@@ -114,19 +117,19 @@ int main() {
 
 StudentRecordCollection::StudentRecordCollection() {
 	this->head = nullptr;
-	this->setFirstStudentPolicy(nullptr);
+	this->setFirstStudentPolicy(StudentRecordCollection::FirstStudentPolicies::NONE);
 }
 
 StudentRecordCollection::StudentRecordCollection(const StudentRecordCollection & original) {
 	this->head = copyList(original.head);
-	this->setFirstStudentPolicy(nullptr);
+	this->setFirstStudentPolicy(StudentRecordCollection::FirstStudentPolicies::NONE);
 }
 
 StudentRecordCollection::StudentRecordCollection(StudentRecordCollection && original) {
 	cout << "this is move constuction" << endl;
 	this->head = original.head;
 	original.head = nullptr;
-	this->setFirstStudentPolicy(nullptr);
+	this->setFirstStudentPolicy(StudentRecordCollection::FirstStudentPolicies::NONE);
 }
 
 StudentRecordCollection::~StudentRecordCollection() {
@@ -313,8 +316,22 @@ bool StudentRecordCollection::nameComesFirst(const StudentRecord & r1, const Stu
 	return  strcmp(r1.getName().c_str(), r2.getName().c_str()) < 0;
 }
 
-void StudentRecordCollection::setFirstStudentPolicy(firstStudentPolicy f) {
-	this->currentPolicy = f;
+void StudentRecordCollection::setFirstStudentPolicy(StudentRecordCollection::FirstStudentPolicies policy) {
+	switch (policy) {
+		case StudentRecordCollection::FirstStudentPolicies::FIRST_NAME:
+			this->currentPolicy = this->nameComesFirst;
+			break;
+		case StudentRecordCollection::FirstStudentPolicies::HIGHEST_GRADE:
+			this->currentPolicy = this->higherGrade;
+			break;
+		case StudentRecordCollection::FirstStudentPolicies::LOWEST_ID:
+			this->currentPolicy = this->lowerStudentNumber;
+			break;
+		default:
+			this->currentPolicy = nullptr;
+	}
+	
+	
 }
 StudentRecord StudentRecordCollection::getFirstStudent() const {
 	assert("empty collection" && this->head != nullptr && this->currentPolicy != nullptr);
