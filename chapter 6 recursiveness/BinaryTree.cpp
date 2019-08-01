@@ -36,7 +36,7 @@ template<class T> class BinaryTree {
 	
 
 
-	private:
+	protected:
 		Tree head;
 		Tree getHead() const;
 		void setHead(Tree tree);
@@ -45,7 +45,7 @@ template<class T> class BinaryTree {
 		T findMax(Tree tree) const;
 };
 
-int main() {
+void testTree() {
 	BinaryTree<int> myTree;
 	myTree.addElement(5);
 	myTree.addElement(22);
@@ -102,7 +102,7 @@ template<class T> void BinaryTree<T>::addElement(T newElement) {
 		this->setHead(new Node(newElement));
 		return;
 	}
-
+	
 	Node * node;
 	Node * next = this->getHead();
 	do {
@@ -114,7 +114,8 @@ template<class T> void BinaryTree<T>::addElement(T newElement) {
 			next = node->getRight();
 		}
 		else {
-			throw "element already exists";
+			std::cerr << "element already exists";
+			return;
 		}
 	} while (next != nullptr);
 
@@ -140,12 +141,14 @@ template<class T> void BinaryTree<T>::deleteTree(Tree tree) {
 	if (tree == nullptr)
 		return;
 
+	
 	cout << "deleteing " << tree->getElement() << endl;
 	deleteTree(tree->getRight());
 	deleteTree(tree->getLeft());
 	delete tree;
 }
 template<class T> BinaryTree<T>::~BinaryTree() {
+	cout << "\ndeleting binary tree" << endl;
 	deleteTree(this->getHead());
 }
 
@@ -172,7 +175,7 @@ bool isBinarySearchTree(BinaryTree<int>::Node *root) {
 
 	bool isSearchTree = true;
 	if (root->getLeft() != nullptr) {
-		isSearchTree = (root->getElement() > root->getLeft()->getElement()) && isBinarySearchTree(root->getLeft);
+		isSearchTree = (root->getElement() > root->getLeft()->getElement()) && isBinarySearchTree(root->getLeft());
 	}
 	if (root->getRight() != nullptr) {
 		isSearchTree = 

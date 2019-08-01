@@ -18,6 +18,9 @@ class StudentRecord{
 		void setName(std::string newName);
 		std::string getLetterGrade();
 		bool isValid() const;
+		void printRecord() const;
+
+
 
 	private:
 		int ID;
@@ -26,6 +29,7 @@ class StudentRecord{
 
 		bool isValidGrade(int grade);
 };
+std::ostream & operator<< (std::ostream & os, const StudentRecord & st);
 
 	
 /* tests for StudentRecord
@@ -103,4 +107,13 @@ bool StudentRecord::isValid() const {
 	if (this->getID() != -1)
 		return true;
 	return false;
+}
+
+void StudentRecord::printRecord() const{
+	cout << "id: " << getID() << " grade: " << getGrade() << " name: " << getName();
+}
+
+std::ostream & operator<< (std::ostream & os, const StudentRecord & st) {
+	st.printRecord();
+	return os;
 }
