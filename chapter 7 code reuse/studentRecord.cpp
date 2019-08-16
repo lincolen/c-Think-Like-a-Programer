@@ -22,12 +22,12 @@ class StudentRecord{
 
 
 
-	private:
+	protected:
 		int ID;
 		int grade;
 		std::string name;
-
 		bool isValidGrade(int grade);
+
 };
 std::ostream & operator<< (std::ostream & os, const StudentRecord & st);
 
