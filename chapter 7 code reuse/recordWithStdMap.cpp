@@ -12,19 +12,19 @@ using std::endl;
 class DynamicStudentRecord : public StudentRecord {
 	public:
 		DynamicStudentRecord();
-		DynamicStudentRecord(int id, int grade, std::string name);
-		void addExtraField(std::string key, std::string value);
-		void addExtraField(std::string key, int value);
-		template<class T> T retriveField(std::string key) ; //declaration only
-		template<> int retriveField<int>(std::string key) ;
-		template<> std::string retriveField<std::string>(std::string key) ;
+		DynamicStudentRecord(const int id,const int grade, const std::string & name);
+		void addExtraField(const std::string & key,const std::string & value);
+		void addExtraField(const std::string & key,const int value);
+		template<class T> T retriveField(const std::string & key) const; //declaration only
+		template<> int retriveField<int>(const std::string & key) const;
+		template<> std::string retriveField<std::string>(const std::string & key) const ;
 		
 
 	private:
 		std::unordered_map<std::string, std::string> textFields;
 		std::unordered_map<std::string, int> numricalFields;
-		template<class T> void addExtraField(std::string key, T value, std::unordered_map<std::string, T> & map);
-		template<class T> T retriveField(std::string key, std::unordered_map<std::string, T> & map) ;
+		template<class T> void addExtraField(const std::string & key,const T value, std::unordered_map<std::string, T> & map);
+		template<class T> T retriveField(std::string key,const std::unordered_map<std::string, T> & map) const;
 };
 
 int main() {
@@ -64,31 +64,31 @@ int main() {
 
 
 DynamicStudentRecord::DynamicStudentRecord() : StudentRecord() {};
-DynamicStudentRecord::DynamicStudentRecord(int id, int grade, std::string name) : StudentRecord(id, grade, name) {};
-void DynamicStudentRecord::addExtraField(std::string key, std::string value) {
+DynamicStudentRecord::DynamicStudentRecord(const int id,const int grade,const std::string & name) : StudentRecord(id, grade, name) {};
+void DynamicStudentRecord::addExtraField(const std::string & key,const std::string & value) {
 	addExtraField(key, value, this->textFields);
 }
-void DynamicStudentRecord::addExtraField(std::string key, int value) {
+void DynamicStudentRecord::addExtraField(const std::string & key,const int value) {
 	addExtraField(key, value, this->numricalFields);
 }
 
 
-template<> int DynamicStudentRecord::retriveField<int>(std::string key)  {
+template<> int DynamicStudentRecord::retriveField<int>(const std::string & key) const {
 	return retriveField(key, this->numricalFields);
 }
 
-template<> std::string DynamicStudentRecord::retriveField<std::string>(std::string key) {
+template<> std::string DynamicStudentRecord::retriveField<std::string>(const std::string & key) const {
 
 	return retriveField(key, this->textFields);
 }
 
 
-template<class T> T DynamicStudentRecord::retriveField(std::string key, std::unordered_map<std::string, T> & map) {
+template<class T> T DynamicStudentRecord::retriveField(std::string key,const std::unordered_map<std::string, T> & map) const {
 
 	return map.at(key);
 }
 
-template<class T> void  DynamicStudentRecord::addExtraField(std::string key, T value, std::unordered_map<std::string, T> & map) {
+template<class T> void  DynamicStudentRecord::addExtraField(const std::string & key,const T value, std::unordered_map<std::string, T> & map) {
 
 	map.emplace(key, value);
 
